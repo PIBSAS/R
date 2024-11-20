@@ -38,24 +38,24 @@ jobs:
         sed -i 's/-ti//g' ./scripts/linux/recaldocker.sh
         ./scripts/linux/recaldocker.sh make recalbox-${ARCH}_64_defconfig
 
-    - name: Debug Buildroot Directory
-      run: |
-        echo "Listing Buildroot Directory"
-        ls -la recalbox-${ARCH}/buildroot
-        echo "Listing output directory"
-        ls -la recalbox-${ARCH}/output
+   # - name: Debug Buildroot Directory
+    #  run: |
+     #   echo "Listing Buildroot Directory"
+      #  ls -la recalbox-${ARCH}/buildroot
+       # echo "Listing output directory"
+        #ls -la recalbox-${ARCH}/output
     
-    - name: Recreate Buildroot Directory
-      run: |
-        cd recalbox-${ARCH}
-        ./scripts/linux/recaldocker.sh make recalbox-${ARCH}_64_defconfig
-        ls -la buildroot  # Verify if buildroot is created
+    #- name: Recreate Buildroot Directory
+     # run: |
+      #  cd recalbox-${ARCH}
+       # ./scripts/linux/recaldocker.sh make recalbox-${ARCH}_64_defconfig
+        #ls -la buildroot  # Verify if buildroot is created
         
-    - name: Debug MergeToBR
-      run: |
-        cd recalbox-${ARCH}
-        sed -i '/Check environment/a set -x' ./scripts/linux/mergeToBR.sh
-        ./scripts/linux/mergeToBR.sh
+    #- name: Debug MergeToBR
+     # run: |
+      #  cd recalbox-${ARCH}
+       # sed -i '/Check environment/a set -x' ./scripts/linux/mergeToBR.sh
+        #./scripts/linux/mergeToBR.sh
         
     - name: Upload Recalbox image artifact
       uses: actions/upload-artifact@v3
