@@ -1,0 +1,70 @@
+name: Build and Release Recalbox
+
+permissions:
+  contents: write
+on:
+  push:
+    branches:
+      - main  # Trigger on pushes to the main branch
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker.io
+        sudo usermod -aG docker $USER
+
+    - name: Build Recalbox
+      env:
+        ARCH: rpi4  # Change this to your target architecture
+        RECALBOX_VERSION: 9.0  # Example version, update as needed
+      run: |
+        git clone https://gitlab.com/recalbox/recalbox.git recalbox-${ARCH}
+        cd recalbox-${ARCH}
+        ./scripts/linux/recaldocker.sh
+
+    - name: Upload Recalbox image artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: recalbox-image
+        path: recalbox-${{ env.ARCH }}/output/images/recalbox.img
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download build artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: recalbox-image
+
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: "recalbox-${{ env.ARCH }}-${{ env.RECALBOX_VERSION }}"
+        release_name: "Recalbox Release ${{ env.ARCH }} - ${{ env.RECALBOX_VERSION }}"
+        body: |
+          This release contains the compiled Recalbox image for architecture ${{ env.ARCH }}.
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create-release.outputs.upload_url }}
+        asset_path: recalbox-${{ env.ARCH }}/output/images/recalbox.img
+        asset_name: recalbox-${{ env.ARCH }}-${{ env.RECALBOX_VERSION }}.img
+        asset_content_type: application/octet-stream
