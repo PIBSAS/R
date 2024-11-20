@@ -37,6 +37,7 @@ jobs:
         git submodule update --init --recursive
         sed -i 's/-ti//g' ./scripts/linux/recaldocker.sh
         ./scripts/linux/recaldocker.sh make recalbox-${ARCH}_64_defconfig
+        make -C /home/runner/work/R/R/recalbox-rpi4/buildroot
 
    # - name: Debug Buildroot Directory
     #  run: |
