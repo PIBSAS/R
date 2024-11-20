@@ -29,11 +29,12 @@ jobs:
     - name: Build Recalbox
       env:
         ARCH: rpi4  # Change this to your target architecture
+        DOCKER_FLAGS: ""
         RECALBOX_VERSION: 9.0  # Example version, update as needed
       run: |
         git clone https://gitlab.com/recalbox/recalbox.git recalbox-${ARCH}
         cd recalbox-${ARCH}
-        ./scripts/linux/recaldocker.sh --no-interaction
+        ./scripts/linux/recaldocker.sh
 
     - name: Upload Recalbox image artifact
       uses: actions/upload-artifact@v3
