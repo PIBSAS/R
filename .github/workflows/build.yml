@@ -34,6 +34,7 @@ jobs:
       run: |
         git clone https://gitlab.com/recalbox/recalbox.git recalbox-${ARCH}
         cd recalbox-${ARCH}
+        sed -i 's/-ti//g' ./scripts/linux/recaldocker.sh
         ./scripts/linux/recaldocker.sh
 
     - name: Upload Recalbox image artifact
