@@ -33,7 +33,7 @@ jobs:
       run: |
         git clone https://gitlab.com/recalbox/recalbox.git recalbox-${ARCH}
         cd recalbox-${ARCH}
-        ./scripts/linux/recaldocker.sh
+        ./scripts/linux/recaldocker.sh --no-interaction
 
     - name: Upload Recalbox image artifact
       uses: actions/upload-artifact@v3
