@@ -37,7 +37,13 @@ jobs:
         git submodule update --init --recursive
         sed -i 's/-ti//g' ./scripts/linux/recaldocker.sh
         ./scripts/linux/recaldocker.sh make recalbox-${ARCH}_64_defconfig
-        make -C /home/runner/work/R/R/recalbox-rpi4/buildroot
+        if [ -f "/home/runner/work/R/R/recalbox-rpi4/output/.config" ]; then
+          echo "Buildroot config found."
+        else
+          echo "Buildroot config not found, exiting."
+          exit 1
+        fi
+        make -C /home/runner/work/R/R/recalbox-rpi4/buildroot O=/home/runner/work/R/R/recalbox-rpi4/output
 
    # - name: Debug Buildroot Directory
     #  run: |
